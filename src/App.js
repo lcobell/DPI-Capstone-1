@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Todo from "./components/Todo";
 import Form from "./components/Form";
-import FilterButton from "./components/FilterButton";
+// import FilterButton from "./components/FilterButton";
 import { nanoid } from "nanoid";
 
 function App(props) {
@@ -16,7 +16,20 @@ function App(props) {
   }
 
   function toggleTaskCompleted(id) {
-    console.log(tasks[0]);
+    const upDatedTasks = tasks.map((task) => {
+      if (id === task.id) {
+        return { ...task, completed: !task.completed };
+      }
+      return task;
+    });
+
+    //call setTasks with with the new array to update state
+    setTasks(upDatedTasks);
+  }
+
+  function deleteTasks(id) {
+    const remainingTasks = tasks.filter((task) => id !== task.id);
+    setTasks(remainingTasks);
   }
 
   const taskList = tasks.map((task) => (
@@ -26,6 +39,7 @@ function App(props) {
       completed={task.completed}
       key={task.id}
       toggleTaskCompleted={toggleTaskCompleted}
+      deleteTasks={deleteTasks}
     />
   ));
   const tasksNoun = taskList.length !== 1 ? "tasks" : "task";
@@ -35,12 +49,6 @@ function App(props) {
     <div className="todoapp stack-large">
       <h1>Logan's React To Do List</h1>
       <Form addTask={addTask} />
-
-      <div className="filters btn-group stack-exception">
-        <FilterButton />
-        <FilterButton />
-        <FilterButton />
-      </div>
 
       <h2 id="list-heading">{headingText}</h2>
       <ul
